@@ -1,0 +1,49 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Welcome User</h2>
+
+      <p id="userEmail">Loading user...</p>
+
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <!-- Firebase + Auth -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="auth.js"></script>
+
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import { logoutUser } from "./auth.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const userEmail = document.getElementById("userEmail");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // Protect dashboard route
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userEmail.textContent = user.email;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    // Logout handler
+    logoutBtn.addEventListener("click", async () => {
+      await logoutUser();
+    });
+  </script>
+</body>
+</html>
