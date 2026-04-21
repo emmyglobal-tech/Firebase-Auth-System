@@ -41,7 +41,7 @@ export const loginUser = async (email, password) => {
 export const logoutUser = async () => {
   try {
     await signOut(auth);
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } catch (error) {
     alert(error.message);
   }
