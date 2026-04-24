@@ -1,58 +1,65 @@
-// auth.js
-
 import { auth } from "./firebase.js";
-import {
-  createUserWithEmailAndPassword,
+import { 
+  createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
+  sendEmailVerification,
+  updateProfile,
+  signOut 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-export const signUpUser = async (email, password) => {
+/**
+ * SIGNUP: Creates user, updates display name, and sends verification email.
+ */
+export const startSignup = async (email, username, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    // 1. Create the user
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // 2. Set the Username
+    await updateProfile(userCredential.user, { displayName: username });
 
-    console.log("User created:", userCredential.user);
-    window.location.href = "dashboard.html";
+    // 3. Send Verification Email
+    await sendEmailVerification(userCredential.user);
+
+    alert("Registration successful! Please check your email and click the verification link before logging in.");
+    window.location.href = "login.html";
   } catch (error) {
-    alert(error.message);
+    console.error("Signup Error:", error.code);
+    alert("Signup Error: " + error.message);
   }
 };
 
+/**
+ * LOGIN: Authenticates user and checks if they verified their email.
+ */
 export const loginUser = async (email, password) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-    console.log("User logged in:", userCredential.user);
-    window.location.href = "dashboard.html";
+    // Security check: Only allow entry if email is verified
+    if (user.emailVerified) {
+      window.location.href = "dashboard.html";
+    } else {
+      alert("Verification Pending: Please click the link sent to your email address.");
+      // Log them out immediately so they don't stay in a half-logged-in state
+      await signOut(auth);
+    }
   } catch (error) {
-    alert(error.message);
+    console.error("Login Error:", error.code);
+    alert("Login Error: " + error.message);
   }
 };
 
+/**
+ * SECURE LOGOUT: Ends the session and redirects to login.
+ */
 export const logoutUser = async () => {
   try {
     await signOut(auth);
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   } catch (error) {
-    alert(error.message);
+    console.error("Logout Error:", error.message);
+    alert("Could not log out. Please try again.");
   }
-};
-
-export const initAuthListener = () => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Logged in:", user.email);
-    } else {
-      console.log("Not logged in");
-    }
-  });
 };
