@@ -22,7 +22,7 @@ export const startSignup = async (email, username, password) => {
     await sendEmailVerification(userCredential.user);
 
     alert("Registration successful! Please check your email and click the verification link before logging in.");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } catch (error) {
     console.error("Signup Error:", error.code);
     alert("Signup Error: " + error.message);
