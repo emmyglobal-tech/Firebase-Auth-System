@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <!-- <div class="container">
     <div class="card">
       <h2 id="statusTitle">Accessing Secure Vault...</h2>
       <p id="userDisplay">Authenticating session...</p>
@@ -16,51 +16,82 @@
         <button id="logoutBtn" style="display:none;">Secure Logout</button>
       </div>
     </div>
+  </div> -->
+
+  <div class="card dashboard-card">
+  <div class="user-header">
+    <h2 id="statusTitle">Accessing Vault...</h2>
+    <p id="userDisplay">Authenticating...</p>
   </div>
 
+  <div class="balance-container">
+    <span class="label">Total Balance</span>
+    <h1 class="amount">$0.00</h1>
+    <div class="balance-details">
+      <span>**** **** **** 4290</span>
+      <span class="chip-icon">VISA</span>
+    </div>
+  </div>
+
+  <div class="actions-grid">
+    <button class="action-btn">Send</button>
+    <button class="action-btn">Receive</button>
+    <button class="action-btn">Swap</button>
+  </div>
+
+  <div class="transaction-section">
+    <h3>Recent Activity</h3>
+    <div class="transaction-item">
+      <div class="tx-info">
+        <span class="tx-name">Cloud Server Subscription</span>
+        <span class="tx-date">April 24, 2026</span>
+      </div>
+      <span class="tx-amount negative">-$15.00</span>
+    </div>
+    <div class="transaction-item">
+      <div class="tx-info">
+        <span class="tx-name">Project Deposit</span>
+        <span class="tx-date">April 22, 2026</span>
+      </div>
+      <span class="tx-amount positive">+$1,250.00</span>
+    </div>
+  </div>
+
+  <button id="logoutBtn" style="display:none;" class="btn-secondary">Secure Logout</button>
+</div>
+
+
+
   <script type="module">
-    import { auth } from "./firebase.js";
-    import { onAuthStateChanged, reload } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { logoutUser } from "./auth.js";
+  import { auth } from "./firebase.js";
+  import { onAuthStateChanged, reload } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { logoutUser } from "./auth.js";
 
-    const statusTitle = document.getElementById('statusTitle');
-    const userDisplay = document.getElementById('userDisplay');
-    const logoutBtn = document.getElementById('logoutBtn');
+  const adminEmail = "emmanuelglobal101@gmail.com";
 
-    // Monitor Authentication State
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // 1. Force refresh the user token to check if they just verified their email
-        try {
-          await reload(user);
-        } catch (error) {
-          console.error("Reload failed:", error);
-        }
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      await reload(user); // Check if they just clicked the verify link
 
-        // 2. Check Verification Status
-        if (user.emailVerified) {
-          statusTitle.textContent = `Welcome, ${user.displayName || 'User'}`;
-          statusTitle.style.color = "#3b82f6"; // TrustChain Blue
-          userDisplay.textContent = user.email;
-          logoutBtn.style.display = "block";
-        } else {
-          statusTitle.textContent = "Verify Your Identity";
-          statusTitle.style.color = "#ef4444"; // Security Red
-          userDisplay.textContent = "Check your inbox for the TrustChain verification link.";
-          logoutBtn.style.display = "block"; // Allow logout to try another email
-        }
-      } else {
-        // 3. No user detected? Go back to login.
-        window.location.href = "login.html";
+      if (user.email === adminEmail) {
+        window.location.href = "admin.html";
+        return;
       }
-    });
 
-    // 4. Handle Logout Button Click
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        await logoutUser();
-      });
+      if (user.emailVerified) {
+        document.getElementById('statusTitle').textContent = `Welcome, ${user.displayName || 'Client'}`;
+        document.getElementById('userDisplay').textContent = user.email;
+        document.getElementById('logoutBtn').style.display = "block";
+      } else {
+        // If not verified, they shouldn't be here
+        window.location.href = "index.html";
+      }
+    } else {
+      window.location.href = "index.html";
     }
-  </script>
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+</script>
 </body>
 </html>
