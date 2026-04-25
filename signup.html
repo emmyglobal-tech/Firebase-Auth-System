@@ -22,18 +22,28 @@
     </div>
   </div>
 
-  <script type="module">
-    import { startSignup } from "./auth.js";
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const u = document.getElementById("username").value;
-      const em = document.getElementById("email").value;
-      const p = document.getElementById("password").value;
-      const cp = document.getElementById("confirmPassword").value;
 
-      if(p !== cp) return alert("Passwords do not match!");
-      await startSignup(em, u, p);
-    });
-  </script>
+ <script type="module">
+  import { startSignup } from "./auth.js";
+
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const u = document.getElementById("username").value;
+    const em = document.getElementById("email").value;
+    const p = document.getElementById("password").value;
+    const cp = document.getElementById("confirmPassword").value;
+
+    if (p !== cp) return alert("Passwords do not match!");
+    
+    const btn = e.target.querySelector("button");
+    btn.innerText = "Sending Link...";
+    btn.disabled = true;
+
+    await startSignup(em, u, p);
+    
+    btn.innerText = "Send Verification Link";
+    btn.disabled = false;
+  });
+</script>
 </body>
 </html>
