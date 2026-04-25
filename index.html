@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -31,5 +31,147 @@
     await loginUser(email, password);
   });
 </script>
+</body>
+</html> -->
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustChain | Secure Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header-section">
+        <h2>Welcome Back</h2>
+        <p>Enter your credentials to access your vault.</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+        </div>
+        <button type="submit" id="loginBtn">Authorize Access</button>
+      </form>
+
+      <div class="footer-links">
+        <p class="switch">New to TrustChain? <a href="signup.html">Create Account</a></p>
+        <p class="forgot-pass"><a href="#">Forgot Password?</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loginUser } from "./auth.js";
+
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      // Visual feedback for mobile users
+      loginBtn.textContent = "Authenticating...";
+      loginBtn.style.opacity = "0.7";
+      loginBtn.disabled = true;
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      
+      try {
+        await loginUser(email, password);
+      } catch (err) {
+        // Reset button if login fails
+        loginBtn.textContent = "Authorize Access";
+        loginBtn.style.opacity = "1";
+        loginBtn.disabled = false;
+      }
+    });
+  </script> -->
+
+
+
+
+
+
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustChain | Secure Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header-section">
+        <h2>Welcome Back</h2>
+        <p>Enter your credentials to access your vault.</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+        </div>
+        <button type="submit" id="loginBtn">Authorize Access</button>
+      </form>
+
+      <div class="footer-links">
+        <p class="switch">New to TrustChain? <a href="signup.html">Create Account</a></p>
+        <p class="forgot-pass"><a href="#" id="forgotBtn">Forgot Password?</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loginUser, resetPassword } from "./auth.js";
+
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const forgotBtn = document.getElementById("forgotBtn");
+
+    // Handle Login
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginBtn.textContent = "Authenticating...";
+      loginBtn.style.opacity = "0.7";
+      loginBtn.disabled = true;
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      
+      try {
+        await loginUser(email, password);
+      } catch (err) {
+        loginBtn.textContent = "Authorize Access";
+        loginBtn.style.opacity = "1";
+        loginBtn.disabled = false;
+      }
+    });
+
+    // Handle Forgot Password
+    forgotBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      await resetPassword(email);
+    });
+  </script>
+</body>
+</html>
 </body>
 </html>
