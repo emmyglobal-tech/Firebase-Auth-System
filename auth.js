@@ -31,7 +31,7 @@ export const startSignup = async (email, username, password) => {
     } catch (dbErr) { console.error("DB Sync error:", dbErr); }
 
     alert("Registration successful! Verify your email before logging in.");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } catch (error) {
     alert("Signup Error: " + error.message);
   }
@@ -63,5 +63,5 @@ export const resetPassword = async (email) => {
 
 export const logoutUser = async () => {
   await signOut(auth);
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 };
